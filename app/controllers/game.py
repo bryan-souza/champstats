@@ -22,10 +22,12 @@ class GameController:
         _game = await Game.get(game_id)
         if not _game:
             raise GameNotFoundError(game_id)
-        return await _game.update(game)
+
+        await _game.set(game.dict(exclude_unset=True))
+        return _game
 
     async def delete(self, game_id):
         _game = await Game.get(game_id)
         if not _game:
             raise GameNotFoundError(game_id)
-        return await Game.delete()
+        return await _game.delete()

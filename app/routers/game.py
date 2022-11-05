@@ -36,6 +36,8 @@ async def update_game(game_id, game: Game, game_controller: GameController = Dep
 @router.delete('/{game_id}', status_code=status.HTTP_204_NO_CONTENT)
 async def delete_game(game_id, game_controller: GameController = Depends(GameController)):
     try:
-        return await game_controller.delete(game_id)
+        await game_controller.delete(game_id)
     except NotFoundError:
         return Response(status_code=status.HTTP_404_NOT_FOUND)
+    else:
+        return Response(status_code=status.HTTP_204_NO_CONTENT)
