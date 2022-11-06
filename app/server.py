@@ -6,21 +6,18 @@ from beanie import init_beanie
 
 from app.models import Game
 from app.routers import game
+from app.config import CONFIG
 
 app = FastAPI()
 
 
 @app.on_event('startup')
 async def on_server_start():
-    try:
-        client = AsyncIOMotorClient(os.environ['DB_URL'])
-        await init_beanie(
-            database=client.champstats,
-            document_models=[Game]
-        )
-    except KeyError:
-        # TODO: Log error
-        raise
+    client = AsyncIOMotorClient(CONFIG.mongo_uri)
+    await init_beanie(
+        database=client.champstats,
+        document_models=[Game]
+    )
 
     # TODO: Include routers
     app.include_router(game.router)
