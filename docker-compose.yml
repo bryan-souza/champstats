@@ -1,0 +1,30 @@
+version: '3.1'
+
+networks:
+  app-net:
+volumes:
+  mongodb-data:
+services:
+  db:
+    image: mongo:latest
+    hostname: database
+    restart: always
+    networks:
+      - app-net
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=agent     # You may change this to fit your own environment
+      - MONGO_INITDB_ROOT_PASSWORD=password  # Change this to fit your own environment
+    volumes:
+      - type: volume
+        source: mongodb-data
+        target: /data/db
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - app-net
+    ports:
+      - 80:80
+    environment:
+      DB_URL: mongodb://agent:password@database:27017
