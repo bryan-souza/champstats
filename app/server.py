@@ -15,7 +15,7 @@ async def on_server_start():
     try:
         client = AsyncIOMotorClient(os.environ['DB_URL'])
         await init_beanie(
-            database=client.get_default_database(),
+            database=client.champstats,
             document_models=[Game]
         )
     except KeyError:
