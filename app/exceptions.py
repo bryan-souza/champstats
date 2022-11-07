@@ -28,3 +28,13 @@ class UserNotFoundError(NotFoundError):
 
 class UserAlreadyExistsError(AlreadyExistsError):
     entity_name = 'User'
+
+
+class EmailAlreadyVerifiedError(Exception):
+    def __init__(self, email: str):
+        super().__init__(f'Email {email} is already verified')
+
+
+class AccountDisabledError(Exception):
+    def __init__(self, user_id):
+        super().__init__(f'Account for user {user_id} is disabled')
