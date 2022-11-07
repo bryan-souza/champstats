@@ -25,14 +25,6 @@ class User(Document, UserOut):
     password: str
     email_confirmed_at: Optional[datetime] = None
 
-    @property
-    def created(self):
-        return self.id.generation_time
-
-    @classmethod
-    async def by_email(cls, email: str):
-        return await cls.find_one(cls.email == email)
-
 
 class AccessToken(BaseModel):
     access_token: str
