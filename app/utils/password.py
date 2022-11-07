@@ -1,21 +1,19 @@
 import os
 import bcrypt
+
 from app.utils import Singleton
+from app.config import CONFIG
 
 
 class PasswordService(metaclass=Singleton):
     def __init__(self):
-        salt = os.environ.get('PWD_SALT')
-        if not salt:
-            # TODO: Log error
-            raise EnvironmentError('`PWD_SALT` is not set')
-
-        self._salt = bytes(salt, encoding='UTF-8')
+        self._salt = CONFIG.salt
 
     def hash_password(self, password: str) -> bytes:
         b_password = bytes(password, encoding='UTF-8')
         return bcrypt.hashpw(b_password, self._salt)
 
-    def verify_password(self, password: str, hashed_password: bytes) -> bool:
+    def verify_password(self, password: str, hashed_password: str) -> bool:
         b_password = bytes(password, encoding='UTF-8')
-        return bcrypt.checkpw(b_password, hashed_password)
+        h_password = bytes(hashed_password, encoding='UTF-8')
+        return bcrypt.checkpw(b_password, h_password)
