@@ -5,7 +5,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from beanie import init_beanie
 
 from app.models import Game
-from app.routers import game
+from app.routers import game, auth
 from app.config import CONFIG
 
 app = FastAPI()
@@ -20,4 +20,5 @@ async def on_server_start():
     )
 
     # TODO: Include routers
+    app.include_router(auth.router)
     app.include_router(game.router)
