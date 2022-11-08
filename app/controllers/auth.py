@@ -14,7 +14,7 @@ class AuthController:
     async def register_new_user(self, user_auth: UserAuth):
         user = await User.find_one(User.email == user_auth.email)
         if user is not None:
-            raise UserAlreadyExistsError
+            raise UserAlreadyExistsError()
 
         hashed_password = self._password_service.hash_password(user_auth.password)
         user = User(email=user_auth.email, password=hashed_password)
