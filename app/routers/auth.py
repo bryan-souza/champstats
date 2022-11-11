@@ -5,7 +5,12 @@ from pydantic import EmailStr
 
 from app.models import UserAuth
 from app.controllers import AuthController
-from app.exceptions import NotFoundError, UserAlreadyExistsError, EmailAlreadyVerifiedError, AccountDisabledError
+from app.exceptions import (
+    NotFoundError,
+    UserAlreadyExistsError,
+    AccountDisabledError,
+    EmailNotVerifiedError
+)
 
 router = APIRouter(prefix='/auth')
 
@@ -40,7 +45,7 @@ async def forgot_password(email: EmailStr = Body(..., embed=True), auth: AuthJWT
     try:
         await auth_controller.forgot_password(email, auth)
         return Response(status_code=status.HTTP_200_OK)
-    except EmailAlreadyVerifiedError:
+    except EmailNotVerifiedError:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail="Email already verified")
     except AccountDisabledError:
@@ -54,7 +59,7 @@ async def reset_password(token: str, new_password: str = Body(..., embed=True),
                          auth_controller: AuthController = Depends(AuthController)):
     try:
         return await auth_controller.reset_password(token, new_password, auth)
-    except EmailAlreadyVerifiedError:
+    except EmailNotVerifiedError:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail="Email already verified")
     except AccountDisabledError:

@@ -2,7 +2,12 @@ from fastapi_jwt_auth import AuthJWT
 from pydantic import EmailStr
 
 from app.models import UserAuth, User, RefreshToken, AccessToken
-from app.exceptions import UserNotFoundError, UserAlreadyExistsError, EmailAlreadyVerifiedError, AccountDisabledError
+from app.exceptions import (
+    UserNotFoundError,
+    UserAlreadyExistsError,
+    AccountDisabledError,
+    EmailNotVerifiedError
+)
 from app.utils import PasswordService, MailingService
 
 
@@ -39,19 +44,20 @@ class AuthController:
 
     async def forgot_password(self, email: EmailStr, auth: AuthJWT):
         user = await User.find_one(User.email == email)
-        if user.email_confirmed_at is not None:
-            raise EmailAlreadyVerifiedError(user.email)
+        if user.email_confirmed_at is None:
+            raise EmailNotVerifiedError(user.email)
         if user.disabled:
             raise AccountDisabledError(user.id)
 
         token = auth.create_access_token(subject=user.email)
         await self._mailing_service.send_password_reset_email(email, token)
+        return None
 
     async def reset_password(self, token: str, new_password: str, auth: AuthJWT):
         auth._token = token
         user = await User.find_one(User.email == auth.get_jwt_subject())
-        if user.email_confirmed_at is not None:
-            raise EmailAlreadyVerifiedError(user.email)
+        if user.email_confirmed_at is None:
+            raise EmailNotVerifiedError(user.email)
         if user.disabled:
             raise AccountDisabledError(user.id)
 
