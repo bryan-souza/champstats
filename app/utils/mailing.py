@@ -7,12 +7,13 @@ from app.utils import Singleton
 class MailingService(metaclass=Singleton):
     def __init__(self):
         self._config = ConnectionConfig(
+            MAIL_SERVER=CONFIG.mail_server,
             MAIL_USERNAME=CONFIG.mail_username,
             MAIL_PASSWORD=CONFIG.mail_password,
             MAIL_FROM=CONFIG.mail_sender,
             MAIL_PORT=CONFIG.mail_port,
-            MAIL_TLS=True,
-            MAIL_SSL=False,
+            MAIL_STARTTLS=False,
+            MAIL_SSL_TLS=False,
             USE_CREDENTIALS=True
         )
 
