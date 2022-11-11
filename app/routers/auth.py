@@ -39,6 +39,7 @@ async def refresh(auth: AuthJWT = Depends(), auth_controller: AuthController = D
     return await auth_controller.refresh_access_token(auth)
 
 
+# UNTESTED
 @router.post('/forgot-password', status_code=status.HTTP_200_OK)
 async def forgot_password(email: EmailStr = Body(..., embed=True), auth: AuthJWT = Depends(),
                           auth_controller: AuthController = Depends(AuthController)):
@@ -52,7 +53,7 @@ async def forgot_password(email: EmailStr = Body(..., embed=True), auth: AuthJWT
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail="Account disabled")
 
-
+# UNTESTED
 @router.post('/reset-password/{token}', status_code=status.HTTP_200_OK)
 async def reset_password(token: str, new_password: str = Body(..., embed=True),
                          auth: AuthJWT = Depends(),
