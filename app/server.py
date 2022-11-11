@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from motor.motor_asyncio import AsyncIOMotorClient
 from beanie import init_beanie
 
-from app.models import Game
+from app.models import Game, User
 from app.routers import game, auth
 from app.config import CONFIG
 
@@ -16,7 +16,7 @@ async def on_server_start():
     client = AsyncIOMotorClient(CONFIG.mongo_uri)
     await init_beanie(
         database=client.champstats,
-        document_models=[Game]
+        document_models=[Game, User]
     )
 
     # TODO: Include routers
