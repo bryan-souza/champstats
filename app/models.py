@@ -25,6 +25,9 @@ class User(Document, UserOut):
     password: str
     email_confirmed_at: Optional[datetime] = None
 
+    class Settings:
+        name = 'users'
+
 
 class AccessToken(BaseModel):
     access_token: str
