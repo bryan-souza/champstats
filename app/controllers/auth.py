@@ -38,7 +38,6 @@ class AuthController:
         return RefreshToken(access_token=access_token, refresh_token=refresh_token)
 
     async def refresh_access_token(self, auth: AuthJWT):
-        auth.jwt_refresh_token_required()
         access_token = auth.create_access_token(subject=auth.get_jwt_subject())
         return AccessToken(access_token=access_token)
 

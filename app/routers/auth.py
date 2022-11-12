@@ -36,6 +36,7 @@ async def login(user_auth: UserAuth, auth: AuthJWT = Depends(),
 
 @router.post('/refresh', status_code=status.HTTP_200_OK)
 async def refresh(auth: AuthJWT = Depends(), auth_controller: AuthController = Depends(AuthController)):
+    auth.jwt_refresh_token_required()
     return await auth_controller.refresh_access_token(auth)
 
 
