@@ -30,6 +30,7 @@ async def insert_championship(
     # HACK: Collections synchronization
     _game = await game_controller.get_by_id(game_id)
     _game.campeonatos.append(_champ.id)
+    _game.qnt_camp = len(_game.campeonatos)
     await _game.save()
 
     return _champ
@@ -74,6 +75,7 @@ async def delete_game(
         # HACK: Collections synchronization
         _game = await game_controller.get_by_id(game_id)
         _game.campeonatos.remove(PydanticObjectId(champ_id))
+        _game.qnt_camp = len(_game.campeonatos)
         await _game.save()
 
     except NotFoundError:
