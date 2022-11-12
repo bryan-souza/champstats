@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from typing import Optional
+from typing import Optional, List
 
 from pydantic import BaseModel, EmailStr
 from beanie import Document, Indexed
@@ -46,3 +46,18 @@ class Game(Document):
 
     class Settings:
         name = 'games'
+
+
+class Championship(Document):
+    nome: str
+    equipes: List[str]
+    vencedor: str
+    premiacao: float
+    mvp: str
+    local: str
+    lotacao: Optional[int] = None
+    datas: List[datetime]
+    situacao: str
+
+    class Settings:
+        name = 'championships'
