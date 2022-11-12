@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, Response, status
+from fastapi_jwt_auth import AuthJWT
 
 from app.models import Game
 from app.controllers import GameController
@@ -13,7 +14,10 @@ async def get_all_games(game_controller: GameController = Depends(GameController
 
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
-async def insert_game(game: Game, game_controller: GameController = Depends(GameController)):
+async def insert_game(game: Game,
+                      game_controller: GameController = Depends(GameController),
+                      auth: AuthJWT = Depends()):
+    auth.jwt_required()
     return await game_controller.insert(game)
 
 
@@ -26,7 +30,10 @@ async def get_game_by_id(game_id, game_controller: GameController = Depends(Game
 
 
 @router.put('/{game_id}', status_code=status.HTTP_200_OK)
-async def update_game(game_id, game: Game, game_controller: GameController = Depends(GameController)):
+async def update_game(game_id, game:Game,
+                      game_controller: GameController = Depends(GameController),
+                      auth: AuthJWT = Depends()):
+    auth.jwt_required()
     try:
         return await game_controller.update(game_id, game)
     except NotFoundError:
@@ -34,7 +41,10 @@ async def update_game(game_id, game: Game, game_controller: GameController = Dep
 
 
 @router.delete('/{game_id}', status_code=status.HTTP_204_NO_CONTENT)
-async def delete_game(game_id, game_controller: GameController = Depends(GameController)):
+async def delete_game(game_id,
+                      game_controller: GameController = Depends(GameController),
+                      auth: AuthJWT = Depends()):
+    auth.jwt_required()
     try:
         await game_controller.delete(game_id)
     except NotFoundError:
