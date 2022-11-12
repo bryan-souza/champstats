@@ -1,4 +1,5 @@
 from fastapi.testclient import TestClient
+from fastapi_jwt_auth import AuthJWT
 from pymongo.results import DeleteResult
 
 from app.server import app
@@ -34,11 +35,15 @@ def test_get_all_games(monkeypatch):
 
 def test_insert_game(monkeypatch):
     with TestClient(app) as client:
+        def mock_jwt_required(*args, **kwargs):
+            return None
+
         async def mock_insert_game(*args, **kwargs):
             return Game(_id='6366d398e11697c77d2281aa', nome='League of Legends',
                         descricao='LoL é o maior MOBA do mundo',
                         qnt_camp=150)
 
+        monkeypatch.setattr(AuthJWT, 'jwt_required', mock_jwt_required)
         monkeypatch.setattr(GameController, 'insert', mock_insert_game)
 
         response = client.post('/jogos/', json={'nome': 'League of Legends',
@@ -48,6 +53,7 @@ def test_insert_game(monkeypatch):
         assert response.json() == {'_id': '6366d398e11697c77d2281aa', 'nome': 'League of Legends',
                                    'descricao': 'LoL é o maior MOBA do mundo', 'qnt_camp': 150}
 
+        monkeypatch.delattr(AuthJWT, 'jwt_required')
         monkeypatch.delattr(GameController, 'insert')
 
 
@@ -102,11 +108,15 @@ def test_get_game_by_id_404(monkeypatch):
 
 def test_update_game(monkeypatch):
     with TestClient(app) as client:
+        def mock_jwt_required(*args, **kwargs):
+            return None
+
         async def mock_update(*args, **kwargs):
             return Game(_id='6366d398e11697c77d2281aa', nome='League of Legends',
                         descricao='LoL é o maior MOBA do mundo',
                         qnt_camp=100)
 
+        monkeypatch.setattr(AuthJWT, 'jwt_required', mock_jwt_required)
         monkeypatch.setattr(GameController, 'update', mock_update)
 
         response = client.put('/jogos/6366d398e11697c77d2281aa', json={'nome': 'League of Legends',
@@ -120,6 +130,7 @@ def test_update_game(monkeypatch):
             'qnt_camp': 100
         }
 
+        monkeypatch.delattr(AuthJWT, 'jwt_required')
         monkeypatch.delattr(GameController, 'update')
 
 
@@ -141,9 +152,13 @@ def test_update_game_422(monkeypatch):
 
 def test_update_game_404(monkeypatch):
     with TestClient(app) as client:
+        def mock_jwt_required(*args, **kwargs):
+            return None
+
         async def mock_update(game_id, *args, **kwargs):
             raise GameNotFoundError(game_id)
 
+        monkeypatch.setattr(AuthJWT, 'jwt_required', mock_jwt_required)
         monkeypatch.setattr(GameController, 'update', mock_update)
 
         response = client.put('/jogos/6366d398e11697c77d2281aa', json={'nome': 'League of Legends',
@@ -151,30 +166,41 @@ def test_update_game_404(monkeypatch):
                                                                        'qnt_camp': 100})
         assert response.status_code == 404
 
+        monkeypatch.delattr(AuthJWT, 'jwt_required')
         monkeypatch.delattr(GameController, 'update')
 
 
 def test_delete_game(monkeypatch):
     with TestClient(app) as client:
+        def mock_jwt_required(*args, **kwargs):
+            return None
+
         async def mock_delete_game(game_id, *args, **kwargs):
             return DeleteResult({}, acknowledged=True)
 
+        monkeypatch.setattr(AuthJWT, 'jwt_required', mock_jwt_required)
         monkeypatch.setattr(GameController, 'delete', mock_delete_game)
 
         response = client.delete('/jogos/6366d398e11697c77d2281aa')
         assert response.status_code == 204
 
+        monkeypatch.delattr(AuthJWT, 'jwt_required')
         monkeypatch.delattr(GameController, 'delete')
 
 
 def test_delete_game_404(monkeypatch):
     with TestClient(app) as client:
+        def mock_jwt_required(*args, **kwargs):
+            return None
+
         async def mock_delete_game_404(game_id, *args, **kwargs):
             raise GameNotFoundError(game_id)
 
+        monkeypatch.setattr(AuthJWT, 'jwt_required', mock_jwt_required)
         monkeypatch.setattr(GameController, 'delete', mock_delete_game_404)
 
         response = client.delete('/jogos/6366d398e11697c77d2281aa')
         assert response.status_code == 404
 
+        monkeypatch.delattr(AuthJWT, 'jwt_required')
         monkeypatch.delattr(GameController, 'delete')
