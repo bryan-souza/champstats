@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from typing import Optional, List
 
 from pydantic import BaseModel, EmailStr
-from beanie import Document, Indexed
+from beanie import Document, Indexed, PydanticObjectId
 
 
 class UserAuth(BaseModel):
@@ -43,6 +43,7 @@ class Game(Document):
     nome: str
     descricao: str
     qnt_camp: int
+    campeonatos: List[PydanticObjectId] = []
 
     class Settings:
         name = 'games'
@@ -51,13 +52,14 @@ class Game(Document):
 class Championship(Document):
     nome: str
     equipes: List[str]
-    vencedor: str
+    vencedor: Optional[str] = None
     premiacao: float
-    mvp: str
+    mvp: Optional[str] = None
     local: str
     lotacao: Optional[int] = None
-    datas: List[datetime]
+    datas: Optional[List[datetime]] = None
     situacao: str
+    partidas: List[PydanticObjectId] = []
 
     class Settings:
         name = 'championships'
