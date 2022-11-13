@@ -1,8 +1,9 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 from typing import Optional, List
-
 from pydantic import BaseModel, EmailStr
 from beanie import Document, Indexed, PydanticObjectId
+
+from app.utils import encoders
 
 
 class UserAuth(BaseModel):
@@ -63,3 +64,19 @@ class Championship(Document):
 
     class Settings:
         name = 'championships'
+        bson_encoders = {
+            datetime: encoders.datetime_encoder
+        }
+
+
+class Match(Document):
+    equipes: List[str]
+    duracao: time
+    vencedor: str
+    placar: str
+
+    class Settings:
+        name = 'matches'
+        bson_encoders = {
+            time: encoders.time_encoder
+        }
