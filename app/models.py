@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 from typing import Optional, List
 
 from pydantic import BaseModel, EmailStr
@@ -63,3 +63,12 @@ class Championship(Document):
 
     class Settings:
         name = 'championships'
+
+
+class Match(Document):
+    duracao: time
+    vencedor: str
+    placar: str
+
+    class Settings:
+        name = 'matches'
