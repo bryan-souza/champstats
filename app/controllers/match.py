@@ -1,3 +1,5 @@
+from beanie import PydanticObjectId
+
 from app.controllers import ChampionshipController
 from app.models import Match
 from app.exceptions import MatchNotFoundError
@@ -37,8 +39,12 @@ class MatchController:
         if not _match:
             raise MatchNotFoundError(match_id)
 
-        _championship = await self._championship_controller.get_by_id(champ_id)
-        _championship.partidas.remove(match_id)
-        await self._championship_controller.update(champ_id, _championship)
+        try:
+            _championship = await self._championship_controller.get_by_id(champ_id)
+            _championship.partidas.remove(PydanticObjectId(match_id))
+            await self._championship_controller.update(champ_id, _championship)
+        # This prevents removal of non-synchronized data
+        except ValueError:
+            pass
 
         return await _match.delete()
