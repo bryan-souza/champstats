@@ -15,12 +15,6 @@ from app.exceptions import (
 )
 
 
-@pytest.fixture
-def client():
-    with TestClient(app) as client:
-        yield client
-
-
 def test_register(client, monkeypatch):
     test_data = User(_id='636d8e4959317d937f9eda82',
                      disabled=False,
@@ -99,16 +93,12 @@ def test_login_401(client, monkeypatch):
     monkeypatch.delattr(AuthController, 'user_login')
 
 
-def test_refresh(client, monkeypatch):
+def test_refresh(client, monkeypatch, mock_authentication):
     test_data = AccessToken(access_token='finge_que_tem_um_token_jwt_aqui')
 
     async def mock_refresh_access_token(*args, **kwargs):
         return test_data
 
-    def mock_jwt_refresh_token_required(*args, **kwargs):
-        return None
-
-    monkeypatch.setattr(AuthJWT, 'jwt_refresh_token_required', mock_jwt_refresh_token_required)
     monkeypatch.setattr(AuthController, 'refresh_access_token', mock_refresh_access_token)
 
     response = client.post('/auth/refresh',
@@ -118,7 +108,6 @@ def test_refresh(client, monkeypatch):
                                'access_token_expires': 900}
 
     monkeypatch.delattr(AuthController, 'refresh_access_token')
-    monkeypatch.delattr(AuthJWT, 'jwt_refresh_token_required')
 
 
 def test_forgot_password(client, monkeypatch):

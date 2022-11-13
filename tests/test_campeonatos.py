@@ -9,52 +9,6 @@ from app.models import Championship, Game
 from app.exceptions import GameNotFoundError, ChampionshipNotFoundError
 
 
-@pytest.fixture
-def client():
-    with TestClient(app) as client:
-        yield client
-
-
-@pytest.fixture
-def mock_game_controller(monkeypatch):
-    async def mock_get_all(*args, **kwargs):
-        return [Game(nome='Test Game', descricao='Game for Testing Purposes', qnt_camp=0)]
-
-    async def mock_get_by_id(*args, **kwargs):
-        return Game(nome='Test Game', descricao='Game for Testing Purposes', qnt_camp=0)
-
-    async def mock_insert(*args, **kwargs):
-        return Game(nome='Test Game', descricao='Game for Testing Purposes', qnt_camp=0)
-
-    async def mock_update(*args, **kwargs):
-        return Game(nome='Test Game', descricao='Game for Testing Purposes', qnt_camp=0)
-
-    async def mock_delete(*args, **kwargs):
-        return None
-
-    monkeypatch.setattr(GameController, 'get_all', mock_get_all)
-    monkeypatch.setattr(GameController, 'get_by_id', mock_get_by_id)
-    monkeypatch.setattr(GameController, 'insert', mock_insert)
-    monkeypatch.setattr(GameController, 'update', mock_update)
-    monkeypatch.setattr(GameController, 'delete', mock_delete)
-    yield
-    monkeypatch.delattr(GameController, 'delete')
-    monkeypatch.delattr(GameController, 'update')
-    monkeypatch.delattr(GameController, 'insert')
-    monkeypatch.delattr(GameController, 'get_by_id')
-    monkeypatch.delattr(GameController, 'get_all')
-
-
-@pytest.fixture
-def mock_authentication(monkeypatch):
-    def mock_jwt_required(*args, **kwargs):
-        return None
-
-    monkeypatch.setattr(AuthJWT, 'jwt_required', mock_jwt_required)
-    yield
-    monkeypatch.delattr(AuthJWT, 'jwt_required')
-
-
 def test_get_all_championships(client, monkeypatch, mock_game_controller):
     test_data = [
         Championship(nome="CBLoL 2021", equipes=["LOUD", "Renga", "RED Kalunga", "Pain Gaming"],
