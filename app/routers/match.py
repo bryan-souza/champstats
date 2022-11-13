@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Depends, HTTPException, Response, Path, status, Body
 from fastapi_jwt_auth import AuthJWT
 
 from app.controllers import MatchController
@@ -10,23 +10,31 @@ router = APIRouter(prefix='/jogos/{game_id}/campeonatos/{champ_id}')
 
 
 @router.get('/', status_code=status.HTTP_200_OK)
-async def get_all_matches(match_controller: MatchController = Depends(MatchController)):
+async def get_all_matches(
+        game_id: str = Path(...),
+        champ_id: str = Path(...),
+        match_controller: MatchController = Depends(MatchController)
+):
     return await match_controller.get_all()
 
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
 async def insert_match(
-        match: Match,
+        game_id: str = Path(...),
+        champ_id: str = Path(...),
+        match: Match = Body(...),
         match_controller: MatchController = Depends(MatchController),
         auth: AuthJWT = Depends()
 ):
     auth.jwt_required()
-    return await match_controller.insert(match)
+    return await match_controller.insert(champ_id, match)
 
 
 @router.get('/{match_id}', status_code=status.HTTP_200_OK)
 async def get_match_by_id(
-        match_id,
+        game_id: str = Path(...),
+        champ_id: str = Path(...),
+        match_id: str = Path(...),
         match_controller: MatchController = Depends(MatchController)
 ):
     try:
@@ -37,8 +45,10 @@ async def get_match_by_id(
 
 @router.put('/{match_id}', status_code=status.HTTP_200_OK)
 async def update_match(
-        match_id,
-        match: Match,
+        game_id: str = Path(...),
+        champ_id: str = Path(...),
+        match_id: str = Path(...),
+        match: Match = Body(...),
         match_controller: MatchController = Depends(MatchController),
         auth: AuthJWT = Depends()
 ):
@@ -51,13 +61,15 @@ async def update_match(
 
 @router.delete('/{match_id}', status_code=status.HTTP_204_NO_CONTENT)
 async def delete_match(
-        match_id,
+        game_id: str = Path(...),
+        champ_id: str = Path(...),
+        match_id: str = Path(...),
         match_controller: MatchController = Depends(MatchController),
         auth: AuthJWT = Depends()
 ):
     auth.jwt_required()
     try:
-        await match_controller.delete(match_id)
+        await match_controller.delete(champ_id, match_id)
     except NotFoundError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
