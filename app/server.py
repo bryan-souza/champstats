@@ -6,8 +6,8 @@ from fastapi_jwt_auth.exceptions import AuthJWTException
 from motor.motor_asyncio import AsyncIOMotorClient
 from beanie import init_beanie
 
-from app.models import Game, User
-from app.routers import game, auth
+from app.models import Game, User, Championship
+from app.routers import game, auth, championship
 from app.config import CONFIG
 
 app = FastAPI()
@@ -28,9 +28,10 @@ async def on_server_start():
     client = AsyncIOMotorClient(CONFIG.mongo_uri)
     await init_beanie(
         database=client.champstats,
-        document_models=[Game, User]
+        document_models=[Game, User, Championship]
     )
 
     # TODO: Include routers
     app.include_router(auth.router)
     app.include_router(game.router)
+    app.include_router(championship.router)

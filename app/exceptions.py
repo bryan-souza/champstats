@@ -26,6 +26,10 @@ class UserNotFoundError(NotFoundError):
     entity_name = 'User'
 
 
+class ChampionshipNotFoundError(NotFoundError):
+    entity_name = 'Championship'
+
+
 class UserAlreadyExistsError(AlreadyExistsError):
     entity_name = 'User'
 

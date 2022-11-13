@@ -30,7 +30,7 @@ async def get_game_by_id(game_id, game_controller: GameController = Depends(Game
 
 
 @router.put('/{game_id}', status_code=status.HTTP_200_OK)
-async def update_game(game_id, game:Game,
+async def update_game(game_id, game: Game,
                       game_controller: GameController = Depends(GameController),
                       auth: AuthJWT = Depends()):
     auth.jwt_required()

@@ -24,9 +24,12 @@ def test_get_all_games(monkeypatch):
         response = client.get('/jogos/')
         assert response.status_code == 200
         assert response.json() == [
-            {'_id': None, 'nome': 'League of Legends', 'descricao': 'LoL é o maior MOBA do mundo', 'qnt_camp': 150},
-            {'_id': None, 'nome': 'CS:GO', 'descricao': 'Counter Strike: Global Offensive', 'qnt_camp': 200},
-            {'_id': None, 'nome': 'FIFA 23', 'descricao': 'Mesma coisa do FIFA 22, só que mais caro', 'qnt_camp': 50}
+            {'_id': None, 'nome': 'League of Legends', 'descricao': 'LoL é o maior MOBA do mundo', 'qnt_camp': 150,
+             'campeonatos': []},
+            {'_id': None, 'nome': 'CS:GO', 'descricao': 'Counter Strike: Global Offensive', 'qnt_camp': 200,
+             'campeonatos': []},
+            {'_id': None, 'nome': 'FIFA 23', 'descricao': 'Mesma coisa do FIFA 22, só que mais caro', 'qnt_camp': 50,
+             'campeonatos': []}
         ]
 
         # monkeypatch cleanup
@@ -51,7 +54,7 @@ def test_insert_game(monkeypatch):
                                                 'qnt_camp': 150})
         assert response.status_code == 201
         assert response.json() == {'_id': '6366d398e11697c77d2281aa', 'nome': 'League of Legends',
-                                   'descricao': 'LoL é o maior MOBA do mundo', 'qnt_camp': 150}
+                                   'descricao': 'LoL é o maior MOBA do mundo', 'qnt_camp': 150, 'campeonatos': []}
 
         monkeypatch.delattr(AuthJWT, 'jwt_required')
         monkeypatch.delattr(GameController, 'insert')
@@ -86,7 +89,7 @@ def test_get_game_by_id(monkeypatch):
         response = client.get('/jogos/6366d398e11697c77d2281aa')
         assert response.status_code == 200
         assert response.json() == {'_id': '6366d398e11697c77d2281aa', 'nome': 'League of Legends',
-                                   'descricao': 'LoL é o maior MOBA do mundo', 'qnt_camp': 150}
+                                   'descricao': 'LoL é o maior MOBA do mundo', 'qnt_camp': 150, 'campeonatos': []}
 
         # monkeypatch cleanup
         monkeypatch.delattr(GameController, 'get_by_id')
@@ -127,7 +130,8 @@ def test_update_game(monkeypatch):
             '_id': '6366d398e11697c77d2281aa',
             'nome': 'League of Legends',
             'descricao': 'LoL é o maior MOBA do mundo',
-            'qnt_camp': 100
+            'qnt_camp': 100,
+            'campeonatos': []
         }
 
         monkeypatch.delattr(AuthJWT, 'jwt_required')

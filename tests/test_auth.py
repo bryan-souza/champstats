@@ -2,6 +2,8 @@ import pytest
 from fastapi.testclient import TestClient
 from datetime import datetime
 
+from fastapi_jwt_auth import AuthJWT
+
 from app.server import app
 from app.models import User, RefreshToken, AccessToken
 from app.controllers import AuthController
@@ -103,15 +105,20 @@ def test_refresh(client, monkeypatch):
     async def mock_refresh_access_token(*args, **kwargs):
         return test_data
 
+    def mock_jwt_refresh_token_required(*args, **kwargs):
+        return None
+
+    monkeypatch.setattr(AuthJWT, 'jwt_refresh_token_required', mock_jwt_refresh_token_required)
     monkeypatch.setattr(AuthController, 'refresh_access_token', mock_refresh_access_token)
 
     response = client.post('/auth/refresh',
-                           headers={'AUTHORIZATION': 'Bearer eyJ0eXAiOiJKV1QiLCJhbG'})
+                           headers={'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbG'})
     assert response.status_code == 200
     assert response.json() == {'access_token': 'finge_que_tem_um_token_jwt_aqui',
                                'access_token_expires': 900}
 
     monkeypatch.delattr(AuthController, 'refresh_access_token')
+    monkeypatch.delattr(AuthJWT, 'jwt_refresh_token_required')
 
 
 def test_forgot_password(client, monkeypatch):
