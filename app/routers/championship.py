@@ -1,5 +1,5 @@
 from beanie import PydanticObjectId
-from fastapi import APIRouter, Depends, Response, status, Path, Body
+from fastapi import APIRouter, Depends, Response, status
 from fastapi_jwt_auth import AuthJWT
 
 from app.models import Championship
