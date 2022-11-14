@@ -10,8 +10,6 @@ router = APIRouter(prefix='/jogos/{game_id}/campeonatos/{champ_id}/partidas')
 
 @router.get('/', status_code=status.HTTP_200_OK)
 async def get_all_matches(
-        game_id=Path(...),
-        champ_id=Path(...),
         match_controller: MatchController = Depends(MatchController)
 ):
     return await match_controller.get_all()
@@ -19,7 +17,6 @@ async def get_all_matches(
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
 async def insert_match(
-        game_id=Path(...),
         champ_id=Path(...),
         match: Match = Body(...),
         match_controller: MatchController = Depends(MatchController),
@@ -31,8 +28,6 @@ async def insert_match(
 
 @router.get('/{match_id}', status_code=status.HTTP_200_OK)
 async def get_match_by_id(
-        game_id=Path(...),
-        champ_id=Path(...),
         match_id=Path(...),
         match_controller: MatchController = Depends(MatchController)
 ):
@@ -44,8 +39,6 @@ async def get_match_by_id(
 
 @router.put('/{match_id}', status_code=status.HTTP_200_OK)
 async def update_match(
-        game_id=Path(...),
-        champ_id=Path(...),
         match_id=Path(...),
         match: Match = Body(...),
         match_controller: MatchController = Depends(MatchController),
@@ -60,7 +53,6 @@ async def update_match(
 
 @router.delete('/{match_id}', status_code=status.HTTP_204_NO_CONTENT)
 async def delete_match(
-        game_id=Path(...),
         champ_id=Path(...),
         match_id=Path(...),
         match_controller: MatchController = Depends(MatchController),
