@@ -9,7 +9,7 @@ from app.models import Championship, Game
 from app.exceptions import GameNotFoundError, ChampionshipNotFoundError
 
 
-def test_get_all_championships(client, monkeypatch, mock_game_controller):
+def test_get_all_championships(client, monkeypatch):
     test_data = [
         Championship(nome="CBLoL 2021", equipes=["LOUD", "Renga", "RED Kalunga", "Pain Gaming"],
                      premiacao=25000, local="Praça da Sé, São Paulo, Brasil", lotacao=200000,
@@ -27,7 +27,7 @@ def test_get_all_championships(client, monkeypatch, mock_game_controller):
 
     monkeypatch.setattr(ChampionshipController, "get_all", mock_get_all)
 
-    response = client.get('/jogos/636ff4f095781437f0693cf4/campeonatos')
+    response = client.get('/jogos/636ff4f095781437f0693cf4/campeonatos/')
     assert response.status_code == 200
     assert response.json() == [
         {'_id': None, 'nome': 'CBLoL 2021', 'equipes': ["LOUD", "Renga", "RED Kalunga", "Pain Gaming"],
@@ -45,7 +45,7 @@ def test_get_all_championships(client, monkeypatch, mock_game_controller):
     monkeypatch.delattr(ChampionshipController, 'get_all')
 
 
-def test_insert_championship(client, monkeypatch, mock_game_controller, mock_authentication):
+def test_insert_championship(client, monkeypatch, mock_authentication):
     test_data = Championship(nome="CBLoL 2021", equipes=["LOUD", "Renga", "RED Kalunga", "Pain Gaming"],
                              premiacao=25000, local="Praça da Sé, São Paulo, Brasil", lotacao=200000,
                              situacao="Concluído")
@@ -70,7 +70,7 @@ def test_insert_championship(client, monkeypatch, mock_game_controller, mock_aut
     monkeypatch.delattr(ChampionshipController, 'insert')
 
 
-def test_insert_championship_422(client, monkeypatch, mock_game_controller, mock_authentication):
+def test_insert_championship_422(client, monkeypatch, mock_authentication):
     test_data = Championship(nome="CBLoL 2021", equipes=["LOUD", "Renga", "RED Kalunga", "Pain Gaming"],
                              premiacao=25000, local="Praça da Sé, São Paulo, Brasil", lotacao=200000,
                              situacao="Concluído")
@@ -88,7 +88,7 @@ def test_insert_championship_422(client, monkeypatch, mock_game_controller, mock
     monkeypatch.delattr(ChampionshipController, 'insert')
 
 
-def test_get_championship_by_id(client, monkeypatch, mock_game_controller):
+def test_get_championship_by_id(client, monkeypatch):
     test_data = Championship(nome="CBLoL 2021", equipes=["LOUD", "Renga", "RED Kalunga", "Pain Gaming"],
                              premiacao=25000, local="Praça da Sé, São Paulo, Brasil", lotacao=200000,
                              situacao="Concluído")
@@ -110,7 +110,7 @@ def test_get_championship_by_id(client, monkeypatch, mock_game_controller):
     monkeypatch.delattr(ChampionshipController, 'get_by_id')
 
 
-def test_get_championship_by_id_404(client, monkeypatch, mock_game_controller):
+def test_get_championship_by_id_404(client, monkeypatch):
     async def mock_get_by_id_404(champ_id, *args, **kwargs, ):
         raise ChampionshipNotFoundError(champ_id)
 
@@ -123,7 +123,7 @@ def test_get_championship_by_id_404(client, monkeypatch, mock_game_controller):
     monkeypatch.delattr(ChampionshipController, 'get_by_id')
 
 
-def test_update_championship(client, monkeypatch, mock_game_controller, mock_authentication):
+def test_update_championship(client, monkeypatch, mock_authentication):
     test_data = Championship(nome="CBLoL 2021", equipes=["Netshoes Miners", "Renga", "RED Kalunga", "Pain Gaming"],
                              premiacao=25000, local="Praça da Sé, São Paulo, Brasil", lotacao=200000,
                              situacao="Concluído")
@@ -148,7 +148,7 @@ def test_update_championship(client, monkeypatch, mock_game_controller, mock_aut
     monkeypatch.delattr(ChampionshipController, 'update')
 
 
-def test_update_championship_422(client, monkeypatch, mock_game_controller, mock_authentication):
+def test_update_championship_422(client, monkeypatch, mock_authentication):
     test_data = Championship(nome="CBLoL 2021", equipes=["Netshoes Miners", "Renga", "RED Kalunga", "Pain Gaming"],
                              premiacao=25000, local="Praça da Sé, São Paulo, Brasil", lotacao=200000,
                              situacao="Concluído")
@@ -167,7 +167,7 @@ def test_update_championship_422(client, monkeypatch, mock_game_controller, mock
     monkeypatch.delattr(ChampionshipController, 'update')
 
 
-def test_update_championship_404(client, monkeypatch, mock_game_controller, mock_authentication):
+def test_update_championship_404(client, monkeypatch, mock_authentication):
     async def mock_update(champ_id, *args, **kwargs):
         raise ChampionshipNotFoundError(champ_id)
 
@@ -183,7 +183,7 @@ def test_update_championship_404(client, monkeypatch, mock_game_controller, mock
     monkeypatch.delattr(ChampionshipController, 'update')
 
 
-def test_delete_championship(client, monkeypatch, mock_game_controller, mock_authentication):
+def test_delete_championship(client, monkeypatch, mock_authentication):
     async def mock_delete(champ_id, *args, **kwargs):
         return DeleteResult({}, acknowledged=True)
 
@@ -195,7 +195,7 @@ def test_delete_championship(client, monkeypatch, mock_game_controller, mock_aut
     monkeypatch.delattr(ChampionshipController, 'delete')
 
 
-def test_delete_championship_404(client, monkeypatch, mock_game_controller, mock_authentication):
+def test_delete_championship_404(client, monkeypatch, mock_authentication):
     async def mock_delete(champ_id, *args, **kwargs):
         raise ChampionshipNotFoundError(champ_id)
 
