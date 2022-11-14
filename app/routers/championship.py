@@ -1,9 +1,8 @@
-from beanie import PydanticObjectId
-from fastapi import APIRouter, Depends, Response, status
+from fastapi import APIRouter, Depends, Response, status, Path, Body
 from fastapi_jwt_auth import AuthJWT
 
 from app.models import Championship
-from app.controllers import GameController, ChampionshipController
+from app.controllers import ChampionshipController
 from app.exceptions import NotFoundError
 
 router = APIRouter(prefix='/jogos/{game_id}/campeonatos')
@@ -11,9 +10,10 @@ router = APIRouter(prefix='/jogos/{game_id}/campeonatos')
 
 @router.get('/', status_code=status.HTTP_200_OK)
 async def get_all_championships(
+        game_id=Path(...),
         championship_controller: ChampionshipController = Depends(ChampionshipController)
 ):
-    return await championship_controller.get_all()
+    return await championship_controller.get_all(game_id)
 
 
 @router.post('/', status_code=status.HTTP_201_CREATED)

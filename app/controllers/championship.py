@@ -10,8 +10,14 @@ class ChampionshipController:
         # HACK: Synchronization with games collection
         self._game_controller: GameController = GameController()
 
-    async def get_all(self):
-        return await Championship.find_all().to_list()
+    async def get_all(self, game_id):
+        _game = await self._game_controller.get_by_id(game_id)
+        if _game is None:
+            return []
+
+        _championships = _game.campeonatos
+        _championships = await Championship.find(Championship.id in _championships).to_list()
+        return _championships
 
     async def get_by_id(self, champ_id):
         _champ = await Championship.get(champ_id)
