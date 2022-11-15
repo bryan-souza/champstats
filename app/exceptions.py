@@ -29,8 +29,13 @@ class UserNotFoundError(NotFoundError):
 class ChampionshipNotFoundError(NotFoundError):
     entity_name = 'Championship'
 
+
 class MatchNotFoundError(NotFoundError):
     entity_name = 'Match'
+
+
+class IndexNotFoundError(NotFoundError):
+    entity_name = 'Index'
 
 
 class UserAlreadyExistsError(AlreadyExistsError):
