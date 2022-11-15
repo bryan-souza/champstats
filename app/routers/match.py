@@ -10,9 +10,10 @@ router = APIRouter(prefix='/jogos/{game_id}/campeonatos/{champ_id}/partidas')
 
 @router.get('/', status_code=status.HTTP_200_OK)
 async def get_all_matches(
+        champ_id=Path(...),
         match_controller: MatchController = Depends(MatchController)
 ):
-    return await match_controller.get_all()
+    return await match_controller.get_all(champ_id)
 
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
@@ -28,17 +29,19 @@ async def insert_match(
 
 @router.get('/{match_id}', status_code=status.HTTP_200_OK)
 async def get_match_by_id(
+        champ_id=Path(...),
         match_id=Path(...),
         match_controller: MatchController = Depends(MatchController)
 ):
     try:
-        return await match_controller.get_by_id(match_id)
+        return await match_controller.get_by_id(champ_id, match_id)
     except NotFoundError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
 
 @router.put('/{match_id}', status_code=status.HTTP_200_OK)
 async def update_match(
+        champ_id=Path(...),
         match_id=Path(...),
         match: Match = Body(...),
         match_controller: MatchController = Depends(MatchController),
@@ -46,7 +49,7 @@ async def update_match(
 ):
     auth.jwt_required()
     try:
-        return await match_controller.update(match_id, match)
+        return await match_controller.update(champ_id, match_id, match)
     except NotFoundError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
