@@ -14,7 +14,10 @@ async def get_all_matches(
         champ_id: int = Path(...),
         match_controller: MatchController = Depends(MatchController)
 ):
-    return await match_controller.get_all(game_id, champ_id)
+    try:
+        return await match_controller.get_all(game_id, champ_id)
+    except NotFoundError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
@@ -26,7 +29,10 @@ async def insert_match(
         auth: AuthJWT = Depends()
 ):
     auth.jwt_required()
-    return await match_controller.insert(game_id, champ_id, match)
+    try:
+        return await match_controller.insert(game_id, champ_id, match)
+    except NotFoundError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
 
 @router.get('/{match_id}', status_code=status.HTTP_200_OK)
