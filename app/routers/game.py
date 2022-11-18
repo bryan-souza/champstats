@@ -22,7 +22,7 @@ async def insert_game(game: Game,
 
 
 @router.get('/{game_id}', status_code=status.HTTP_200_OK)
-async def get_game_by_id(game_id, game_controller: GameController = Depends(GameController)):
+async def get_game_by_id(game_id: int, game_controller: GameController = Depends(GameController)):
     try:
         return await game_controller.get_by_id(game_id)
     except NotFoundError:
@@ -30,7 +30,7 @@ async def get_game_by_id(game_id, game_controller: GameController = Depends(Game
 
 
 @router.put('/{game_id}', status_code=status.HTTP_200_OK)
-async def update_game(game_id, game: Game,
+async def update_game(game_id: int, game: Game,
                       game_controller: GameController = Depends(GameController),
                       auth: AuthJWT = Depends()):
     auth.jwt_required()
@@ -41,7 +41,7 @@ async def update_game(game_id, game: Game,
 
 
 @router.delete('/{game_id}', status_code=status.HTTP_204_NO_CONTENT)
-async def delete_game(game_id,
+async def delete_game(game_id: int,
                       game_controller: GameController = Depends(GameController),
                       auth: AuthJWT = Depends()):
     auth.jwt_required()
