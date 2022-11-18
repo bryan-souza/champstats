@@ -1,13 +1,16 @@
 from beanie import PydanticObjectId
+from beanie.operators import In
 
 from app.controllers import GameController
 from app.models import Championship
 from app.exceptions import ChampionshipNotFoundError, GameNotFoundError
+from app.utils.indexes import IndexService
 
 
 class ChampionshipController:
     def __init__(self):
         self._game_controller: GameController = GameController()
+        self._index_service: IndexService = IndexService()
 
     async def __get_championships_of_game(self, game_id):
         _game = await self._game_controller.get_by_id(game_id)
@@ -17,23 +20,25 @@ class ChampionshipController:
 
     async def get_all(self, game_id):
         _championships = await self.__get_championships_of_game(game_id)
-        _championships = await Championship.find(Championship.id in _championships).to_list()
+        _championships = await Championship.find(In(Championship.id, _championships)).to_list()
         return _championships
 
     async def get_by_id(self, game_id, champ_id):
         _championships = await self.__get_championships_of_game(game_id)
 
         if champ_id not in _championships:
-            return ChampionshipNotFoundError(champ_id)
+            raise ChampionshipNotFoundError(champ_id)
 
         _champ = await Championship.get(champ_id)
         if _champ is None:
-            return ChampionshipNotFoundError(champ_id)
+            raise ChampionshipNotFoundError(champ_id)
 
         return _champ
 
     async def insert(self, game_id, champ: Championship):
+        champ.id = await self._index_service.get_new_champ_index()
         _champ = await Championship.insert_one(champ)
+
         _game = await self._game_controller.get_by_id(game_id)
         _game.campeonatos.append(_champ.id)
         _game.qnt_camp = len(_game.campeonatos)
@@ -42,14 +47,15 @@ class ChampionshipController:
 
     async def update(self, game_id, champ_id, champ: Championship):
         _championships = await self.__get_championships_of_game(game_id)
+
         if champ_id not in _championships:
             raise ChampionshipNotFoundError(champ_id)
 
         _champ = await Championship.get(champ_id)
         if _champ is None:
-            return ChampionshipNotFoundError(champ_id)
+            raise ChampionshipNotFoundError(champ_id)
 
-        await _champ.set(champ.dict(exclude_unset=True))
+        await _champ.set(champ.dict(exclude={'id': True}, exclude_unset=True))
         return _champ
 
     async def delete(self, game_id, champ_id):
