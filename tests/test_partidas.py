@@ -44,7 +44,7 @@ def test_get_all_matches(client, monkeypatch, fake_match_list):
 
     monkeypatch.setattr(MatchController, 'get_all', mock_get_all)
 
-    response = client.get('/jogos/6366d398e11697c77d2281aa/campeonatos/636ff4f095781437f0693cf4/partidas/')
+    response = client.get('/jogos/0/campeonatos/0/partidas/')
     assert response.status_code == 200
     assert response.json() == test_json
 
@@ -59,7 +59,7 @@ def test_insert_match(client, monkeypatch, fake_match, mock_authentication):
 
     monkeypatch.setattr(MatchController, 'insert', mock_insert)
 
-    response = client.post('/jogos/6366d398e11697c77d2281aa/campeonatos/636ff4f095781437f0693cf4/partidas/',
+    response = client.post('/jogos/0/campeonatos/0/partidas/',
                            json={'equipes': ["LOUD", "Pain Gaming"], 'duracao': '00:30:00', 'vencedor': 'LOUD',
                                  'placar': '20 X 15'})
     assert response.status_code == 201
@@ -76,7 +76,7 @@ def test_insert_match_422(client, monkeypatch, fake_match, mock_authentication):
 
     monkeypatch.setattr(MatchController, 'insert', mock_insert)
 
-    response = client.post('/jogos/6366d398e11697c77d2281aa/campeonatos/636ff4f095781437f0693cf4/partidas/',
+    response = client.post('/jogos/0/campeonatos/0/partidas/',
                            json={'equipes': ["LOUD", "Pain Gaming"], 'duracao': '00:30:00', 'vencedor': 'LOUD'})
     assert response.status_code == 422
 
@@ -91,8 +91,7 @@ def test_get_match_by_id(client, monkeypatch, fake_match):
 
     monkeypatch.setattr(MatchController, 'get_by_id', mock_get_by_id)
 
-    response = client.get(
-        '/jogos/6366d398e11697c77d2281aa/campeonatos/636ff4f095781437f0693cf4/partidas/636ff4f095781437f0693cf4')
+    response = client.get('/jogos/0/campeonatos/0/partidas/0')
 
     assert response.status_code == 200
     assert response.json() == test_json
@@ -106,8 +105,7 @@ def test_get_match_by_id_404(client, monkeypatch):
 
     monkeypatch.setattr(MatchController, 'get_by_id', mock_get_by_id)
 
-    response = client.get(
-        '/jogos/6366d398e11697c77d2281aa/campeonatos/636ff4f095781437f0693cf4/partidas/636ff4f095781437f0693cf4')
+    response = client.get('/jogos/0/campeonatos/0/partidas/0')
 
     assert response.status_code == 404
 
@@ -124,10 +122,9 @@ def test_update_match(client, monkeypatch, mock_authentication):
 
     monkeypatch.setattr(MatchController, 'update', mock_update)
 
-    response = client.put(
-        '/jogos/6366d398e11697c77d2281aa/campeonatos/636ff4f095781437f0693cf4/partidas/636ff4f095781437f0693cf4',
-        json={'equipes': ["LOUD", "Pain Gaming"], 'duracao': '00:32:00', 'vencedor': 'LOUD', 'placar': '20 X 15'}
-    )
+    response = client.put('/jogos/0/campeonatos/0/partidas/0',
+                          json={'equipes': ["LOUD", "Pain Gaming"], 'duracao': '00:32:00', 'vencedor': 'LOUD',
+                                'placar': '20 X 15'})
 
     assert response.status_code == 200
     assert response.json() == test_json
@@ -141,10 +138,9 @@ def test_update_match_404(client, monkeypatch, mock_authentication):
 
     monkeypatch.setattr(MatchController, 'update', mock_update)
 
-    response = client.put(
-        '/jogos/6366d398e11697c77d2281aa/campeonatos/636ff4f095781437f0693cf4/partidas/636ff4f095781437f0693cf4',
-        json={'equipes': ["LOUD", "Pain Gaming"], 'duracao': '00:32:00', 'vencedor': 'LOUD', 'placar': '20 X 15'}
-    )
+    response = client.put('/jogos/0/campeonatos/0/partidas/0',
+                          json={'equipes': ["LOUD", "Pain Gaming"], 'duracao': '00:32:00', 'vencedor': 'LOUD',
+                                'placar': '20 X 15'})
 
     assert response.status_code == 404
 
@@ -159,10 +155,8 @@ def test_update_match_422(client, monkeypatch, mock_authentication):
 
     monkeypatch.setattr(MatchController, 'update', mock_update)
 
-    response = client.put(
-        '/jogos/6366d398e11697c77d2281aa/campeonatos/636ff4f095781437f0693cf4/partidas/636ff4f095781437f0693cf4',
-        json={'equipes': ["LOUD", "Pain Gaming"], 'duracao': '00:32:00', 'vencedor': 'LOUD'}
-    )
+    response = client.put('/jogos/0/campeonatos/0/partidas/0',
+                          json={'equipes': ["LOUD", "Pain Gaming"], 'duracao': '00:32:00', 'vencedor': 'LOUD'})
 
     assert response.status_code == 422
 
@@ -175,9 +169,7 @@ def test_delete_match(client, monkeypatch, mock_authentication):
 
     monkeypatch.setattr(MatchController, 'delete', mock_delete)
 
-    response = client.delete(
-        '/jogos/6366d398e11697c77d2281aa/campeonatos/636ff4f095781437f0693cf4/partidas/636ff4f095781437f0693cf4'
-    )
+    response = client.delete('/jogos/0/campeonatos/0/partidas/0')
 
     assert response.status_code == 204
 
@@ -190,9 +182,7 @@ def test_delete_match_404(client, monkeypatch, mock_authentication):
 
     monkeypatch.setattr(MatchController, 'delete', mock_delete)
 
-    response = client.delete(
-        '/jogos/6366d398e11697c77d2281aa/campeonatos/636ff4f095781437f0693cf4/partidas/636ff4f095781437f0693cf4'
-    )
+    response = client.delete('/jogos/0/campeonatos/0/partidas/0')
 
     assert response.status_code == 404
 
