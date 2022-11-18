@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Response, status, Path, Body
+from fastapi import APIRouter, Depends, Response, status, Path, Body, HTTPException
 from fastapi_jwt_auth import AuthJWT
 
 from app.models import Championship
@@ -13,7 +13,10 @@ async def get_all_championships(
         game_id: int = Path(...),
         championship_controller: ChampionshipController = Depends(ChampionshipController)
 ):
-    return await championship_controller.get_all(game_id)
+    try:
+        return await championship_controller.get_all(game_id)
+    except NotFoundError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
@@ -24,7 +27,10 @@ async def insert_championship(
         auth: AuthJWT = Depends()
 ):
     auth.jwt_required()
-    return await championship_controller.insert(game_id, champ)
+    try:
+        return await championship_controller.insert(game_id, champ)
+    except NotFoundError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
 
 @router.get('/{champ_id}', status_code=status.HTTP_200_OK)
