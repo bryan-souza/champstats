@@ -2,9 +2,9 @@ from beanie import Document
 
 
 class Index(Document):
-    game_index: int
-    championship_index: int
-    match_index: int
+    game_index: int = -1
+    championship_index: int = -1
+    match_index: int = -1
 
     class Settings:
         name = 'indexes'
