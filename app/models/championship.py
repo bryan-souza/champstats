@@ -1,10 +1,14 @@
 from beanie import Document, PydanticObjectId
 from typing import Optional, List
 from datetime import datetime
+
+from pydantic import Field
+
 from app.utils import encoders
 
 
 class Championship(Document):
+    id: Optional[int] = Field()
     nome: str
     equipes: List[str]
     vencedor: Optional[str] = None
