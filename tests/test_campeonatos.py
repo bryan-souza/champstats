@@ -27,7 +27,7 @@ def test_get_all_championships(client, monkeypatch):
 
     monkeypatch.setattr(ChampionshipController, "get_all", mock_get_all)
 
-    response = client.get('/jogos/636ff4f095781437f0693cf4/campeonatos/')
+    response = client.get('/jogos/0/campeonatos/')
     assert response.status_code == 200
     assert response.json() == [
         {'_id': None, 'nome': 'CBLoL 2021', 'equipes': ["LOUD", "Renga", "RED Kalunga", "Pain Gaming"],
@@ -55,7 +55,7 @@ def test_insert_championship(client, monkeypatch, mock_authentication):
 
     monkeypatch.setattr(ChampionshipController, 'insert', mock_insert_championship)
 
-    response = client.post('/jogos/636ff4f095781437f0693cf4/campeonatos/',
+    response = client.post('/jogos/0/campeonatos/',
                            json={'nome': 'CBLoL 2021', 'equipes': ["LOUD", "Renga", "RED Kalunga", "Pain Gaming"],
                                  'premiacao': 25000, 'local': 'Praça da Sé, São Paulo, Brasil', 'lotacao': 200000,
                                  'situacao': 'Concluído'})
@@ -80,7 +80,7 @@ def test_insert_championship_422(client, monkeypatch, mock_authentication):
 
     monkeypatch.setattr(ChampionshipController, 'insert', mock_insert)
 
-    response = client.post('/jogos/636ff4f095781437f0693cf4/campeonatos/',
+    response = client.post('/jogos/0/campeonatos/',
                            json={'nome': 'CBLoL 2021', 'equipes': ["LOUD", "Renga", "RED Kalunga", "Pain Gaming"],
                                  'premiacao': 25000, 'local': 'Praça da Sé, São Paulo, Brasil', 'lotacao': 200000})
     assert response.status_code == 422
@@ -98,7 +98,7 @@ def test_get_championship_by_id(client, monkeypatch):
 
     monkeypatch.setattr(ChampionshipController, 'get_by_id', mock_get_by_id)
 
-    response = client.get('/jogos/6366d398e11697c77d2281aa/campeonatos/636ff4f095781437f0693cf4')
+    response = client.get('/jogos/0/campeonatos/0')
     assert response.status_code == 200
     assert response.json() == {'_id': None, 'nome': 'CBLoL 2021',
                                'equipes': ["LOUD", "Renga", "RED Kalunga", "Pain Gaming"],
@@ -116,7 +116,7 @@ def test_get_championship_by_id_404(client, monkeypatch):
 
     monkeypatch.setattr(ChampionshipController, 'get_by_id', mock_get_by_id_404)
 
-    response = client.get('/jogos/6366d398e11697c77d2281aa/campeonatos/636ff4f095781437f0693cf4')
+    response = client.get('/jogos/0/campeonatos/0')
     assert response.status_code == 404
 
     # monkeypatch cleanup
@@ -133,7 +133,7 @@ def test_update_championship(client, monkeypatch, mock_authentication):
 
     monkeypatch.setattr(ChampionshipController, 'update', mock_update)
 
-    response = client.put('/jogos/6366d398e11697c77d2281aa/campeonatos/636ff4f095781437f0693cf4',
+    response = client.put('/jogos/0/campeonatos/0',
                           json={'nome': 'CBLoL 2021',
                                 'equipes': ["Netshoes Miners", "Renga", "RED Kalunga", "Pain Gaming"],
                                 'premiacao': 25000, 'local': 'Praça da Sé, São Paulo, Brasil', 'lotacao': 200000,
@@ -158,7 +158,7 @@ def test_update_championship_422(client, monkeypatch, mock_authentication):
 
     monkeypatch.setattr(ChampionshipController, 'update', mock_update)
 
-    response = client.put('/jogos/6366d398e11697c77d2281aa/campeonatos/636ff4f095781437f0693cf4',
+    response = client.put('/jogos/0/campeonatos/0',
                           json={'nome': 'CBLoL 2021',
                                 'equipes': ["Netshoes Miners", "Renga", "RED Kalunga", "Pain Gaming"],
                                 'premiacao': 25000, 'local': 'Praça da Sé, São Paulo, Brasil', 'lotacao': 200000})
@@ -173,7 +173,7 @@ def test_update_championship_404(client, monkeypatch, mock_authentication):
 
     monkeypatch.setattr(ChampionshipController, 'update', mock_update)
 
-    response = client.put('/jogos/6366d398e11697c77d2281aa/campeonatos/636ff4f095781437f0693cf4',
+    response = client.put('/jogos/0/campeonatos/0',
                           json={'nome': 'CBLoL 2021',
                                 'equipes': ["Netshoes Miners", "Renga", "RED Kalunga", "Pain Gaming"],
                                 'premiacao': 25000, 'local': 'Praça da Sé, São Paulo, Brasil', 'lotacao': 200000,
@@ -189,7 +189,7 @@ def test_delete_championship(client, monkeypatch, mock_authentication):
 
     monkeypatch.setattr(ChampionshipController, 'delete', mock_delete)
 
-    response = client.delete('/jogos/6366d398e11697c77d2281aa/campeonatos/636ff4f095781437f0693cf4')
+    response = client.delete('/jogos/0/campeonatos/0')
     assert response.status_code == 204
 
     monkeypatch.delattr(ChampionshipController, 'delete')
@@ -201,7 +201,7 @@ def test_delete_championship_404(client, monkeypatch, mock_authentication):
 
     monkeypatch.setattr(ChampionshipController, 'delete', mock_delete)
 
-    response = client.delete('/jogos/6366d398e11697c77d2281aa/campeonatos/636ff4f095781437f0693cf4')
+    response = client.delete('/jogos/0/campeonatos/0')
     assert response.status_code == 404
 
     monkeypatch.delattr(ChampionshipController, 'delete')
