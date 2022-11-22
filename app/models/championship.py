@@ -18,7 +18,7 @@ class Championship(Document):
     lotacao: Optional[str] = None
     datas: Optional[List[datetime]] = []
     situacao: str
-    partidas: List[PydanticObjectId] = []
+    partidas: List[int] = []
 
     class Settings:
         name = 'championships'
