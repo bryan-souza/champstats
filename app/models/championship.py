@@ -12,11 +12,11 @@ class Championship(Document):
     nome: str
     equipes: List[str]
     vencedor: Optional[str] = None
-    premiacao: float
+    premiacao: str
     mvp: Optional[str] = None
     local: str
-    lotacao: Optional[int] = None
-    datas: Optional[List[datetime]] = None
+    lotacao: Optional[str] = None
+    datas: Optional[List[datetime]] = []
     situacao: str
     partidas: List[PydanticObjectId] = []
 
