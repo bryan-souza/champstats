@@ -9,7 +9,7 @@ ENV PATH="/opt/venv/bin:$PATH"
 COPY ./requirements.txt /app/requirements.txt
 RUN pip install -Ur requirements.txt
 
-FROM python:3.9-alpine as production
+FROM python:3.9 as production
 WORKDIR /src/
 COPY --from=builder /opt/venv /opt/venv
 
